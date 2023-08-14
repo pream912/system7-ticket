@@ -1,23 +1,69 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import DashBoard from '../components/DashBoard.vue'
+import DesignationPage from '../components/user_management/DesignationPage.vue'
+import UsersPage from '../components/user_management/UsersPage.vue'
+import IssuesPage from '../components/ticket_management/IssuesPage.vue'
+import SolutionsPage from '../components/ticket_management/SolutionsPage.vue'
+import SitesPage from '../components/site_management/SitesPage.vue'
+import StationsPage from '../components/site_management/StationsPage.vue'
+import TicketsPage from '../components/ticket_management/TicketsPage.vue'
+import TicketStatus from '../components/reports/TicketStatus.vue'
+import UserActivity from '../components/reports/UserActivity.vue'
+import DurationTaken from '../components/reports/DurationTaken.vue'
+import IssueWise from '../components/reports/IssueWise.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    component: DashBoard
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/designations',
+    component: DesignationPage
+  },
+  {
+    path: '/users',
+    component: UsersPage
+  },
+  {
+    path: '/issues',
+    component: IssuesPage
+  },
+  {
+    path: '/solutions',
+    component: SolutionsPage
+  },
+  {
+    path: '/sites',
+    component: SitesPage
+  },
+  {
+    path: '/stations',
+    component: StationsPage
+  },
+  {
+    path: '/tickets',
+    component: TicketsPage
+  },
+  {
+    path: '/ticketstatus',
+    component: TicketStatus
+  },
+  {
+    path: '/useractivity',
+    component: UserActivity
+  },
+  {
+    path: '/durationtaken',
+    component: DurationTaken
+  },
+  {
+    path: '/issuewise',
+    component: IssueWise
+  },
 ]
 
 const router = new VueRouter({
