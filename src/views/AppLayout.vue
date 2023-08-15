@@ -35,6 +35,24 @@
                 </v-list-group>
                 <v-list-group
                     :value="false"
+                    prepend-icon="mdi-google-maps"
+                >
+                    <template v-slot:activator>
+                        <v-list-item-title>Site management</v-list-item-title>
+                    </template>
+                    <v-list-item class="ml-4" link to="/sites">
+                        <v-list-item-content>
+                            <v-list-item-title>Sites</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item class="ml-4" link to="/stations">
+                        <v-list-item-content>
+                            <v-list-item-title>Stations</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
+                <v-list-group
+                    :value="false"
                     prepend-icon="mdi-wrench"
                 >
                     <template v-slot:activator>
@@ -53,24 +71,6 @@
                     <v-list-item class="ml-4" link to="/tickets">
                         <v-list-item-content>
                             <v-list-item-title>Tickets</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list-group>
-                <v-list-group
-                    :value="false"
-                    prepend-icon="mdi-google-maps"
-                >
-                    <template v-slot:activator>
-                        <v-list-item-title>Site management</v-list-item-title>
-                    </template>
-                    <v-list-item class="ml-4" link to="/sites">
-                        <v-list-item-content>
-                            <v-list-item-title>Sites</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item class="ml-4" link to="/stations">
-                        <v-list-item-content>
-                            <v-list-item-title>Stations</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>

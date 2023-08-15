@@ -61,6 +61,50 @@
                 <v-text-field filled label="Search" v-model="search" append-icon="mdi-magnify"></v-text-field>
             </v-col>
         </v-row>
+        <v-row >
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row align-content="center" justify="center">
+                            <v-col cols="12">
+                                <h3>Open Tickets</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="red--text">{{ opentickets.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row align-content="center" justify="center">
+                            <v-col cols="12">
+                                <h3>Followups</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="orange--text">{{ followups.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <h3>Closed Tickets</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="green--text">{{ closedtickets.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
         <v-row>
             <v-col>
                 <v-btn v-if="filt_tickets.length > 0" small color="green" @click="JSONToCSVConvertor(filt_tickets, `ticket_status_report`)">Export data</v-btn>
@@ -259,19 +303,19 @@ export default {
         },
 
         opentickets() {
-            return this.tickets.filter((item) => {
+            return this.filt_tickets.filter((item) => {
                 return item.status == 'open'
             })
         },
 
         followups() {
-            return this.tickets.filter((item) => {
+            return this.filt_tickets.filter((item) => {
                 return item.status == 'followup'
             })
         },
 
         closedtickets() {
-            return this.tickets.filter((item) => {
+            return this.filt_tickets.filter((item) => {
                 return item.status == 'closed'
             })
         },

@@ -16,7 +16,7 @@
                 <v-card class="rounded-xl" elevation="10" max-width="600px">
                     <v-card-title>Login</v-card-title>
                     <v-card-text>
-                        <v-text-field prepend-inner-icon="mdi-email" v-model="email" :rules="emailRules" label="Email" ></v-text-field>
+                        <v-text-field prepend-inner-icon="mdi-account" v-model="username" label="Username" ></v-text-field>
                         <v-text-field prepend-inner-icon="mdi-lock" v-model="password" type="password" label="Password"></v-text-field>
                     </v-card-text>
                     <v-card-actions>
@@ -37,7 +37,7 @@ export default {
         reg: false,
         valid: true,
         name: '',
-        email: '',
+        username: '',
         phone: '',
         phoneRules: [
             v => !!v || 'Phone number is required',
@@ -57,7 +57,7 @@ export default {
 
     methods: {
         async login() {
-            await pocketbase.collection('users').authWithPassword(this.email, this.password)
+            await pocketbase.collection('users').authWithPassword(this.username, this.password)
             console.log(pocketbase.authStore)
 
             this.loading = true

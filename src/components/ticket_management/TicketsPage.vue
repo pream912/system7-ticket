@@ -406,7 +406,7 @@ export default {
             }
 
             for(let i in st) {
-                attended_by = st[i].attendedBy != "" ? `${this.$store.getters.loadedUser(st[i].createdBy).name} (${this.$store.getters.loadedUser(st[i].createdBy).designation})` : '-'
+                attended_by = st[i].attendedBy != "" ? `${this.$store.getters.loadedUser(st[i].attendedBy).name} (${this.$store.getters.loadedUser(st[i].attendedBy).designation})` : '-'
                 close_date = st[i].closedOn != 0 ? this.toLocalDate(st[i].closedOn) : '-'
                 ft.push({
                     ticket_id: st[i].ticket_id,

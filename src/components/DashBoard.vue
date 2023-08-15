@@ -53,67 +53,81 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="4">
-                <v-card elevation="5">
-                    <v-card-text>
-                        <v-row align-content="center" justify="center">
-                            <v-col cols="12">
-                                <h3>Total Tickets</h3>
-                            </v-col>
-                            <v-col cols="12">
-                                <h1 class="green--text">  {{ tickets.length }}  </h1>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+            <v-col cols="6">
+                <v-row>
+                    <v-col cols="4">
+                        <v-card elevation="5">
+                            <v-card-text>
+                                <v-row align-content="center" justify="center">
+                                    <v-col cols="12">
+                                        <h3>Open Tickets</h3>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <h1 class="red--text">{{ opentickets.length }}</h1>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-card elevation="5">
+                            <v-card-text>
+                                <v-row align-content="center" justify="center">
+                                    <v-col cols="12">
+                                        <h3>Followups</h3>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <h1 class="orange--text">{{ followups.length }}</h1>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-card elevation="5">
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <h3>Closed Tickets</h3>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <h1 class="green--text">{{ closedtickets.length }}</h1>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-card elevation="5">
+                            <v-card-text>
+                                <v-row align-content="center" justify="center">
+                                    <v-col cols="12">
+                                        <h3>Total Tickets</h3>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <h1 class="green--text">  {{ tickets.length }}  </h1>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
             </v-col>
-            <v-col cols="4">
-                <v-card elevation="5">
-                    <v-card-text>
-                        <v-row align-content="center" justify="center">
-                            <v-col cols="12">
-                                <h3>Open Tickets</h3>
-                            </v-col>
-                            <v-col cols="12">
-                                <h1 class="red--text">{{ opentickets.length }}</h1>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+            <v-col cols="6">
+                <DoughnutChart :chartData="chartData" />
             </v-col>
-            <v-col cols="4">
-                <v-card elevation="5">
-                    <v-card-text>
-                        <v-row align-content="center" justify="center">
-                            <v-col cols="12">
-                                <h3>Followups</h3>
-                            </v-col>
-                            <v-col cols="12">
-                                <h1 class="orange--text">{{ followups.length }}</h1>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="4">
-                <v-card elevation="5">
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12">
-                                <h3>Closed Tickets</h3>
-                            </v-col>
-                            <v-col cols="12">
-                                <h1 class="green--text">{{ closedtickets.length }}</h1>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+        </v-row>
+        <v-row>
+            <v-col cols="12">
+                <LineChart />
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
+import DoughnutChart from './Doughnut.vue'
+import LineChart from './LineChart.vue'
 export default {
     data: () => ({
         date: new Date().toISOString().substr(0, 7),
@@ -132,8 +146,12 @@ export default {
         selectedInv: null,
         paymentmodes: ['Bank Transfer', 'Cash', 'Cheque', 'Credit Card', 'Debit Card', 'G-Pay', 'Paytm', 'PhonePe'],
         mop: null,
+        
     }),
-
+    components: {
+        DoughnutChart,
+        LineChart
+    },
     methods: {
 
         toLocalDate(date) {
@@ -206,6 +224,18 @@ export default {
             return this.tickets.filter((item) => {
                 return item.status == 'closed'
             })
+        },
+
+        chartData() { 
+            return {
+                labels: ['Closed', 'Followup', 'Open'],
+                datasets: [
+                    {
+                    backgroundColor: ['#66BB6A', '#FFA726', '#EF5350'],
+                    data: [this.closedtickets.length, this.followups.length, this.opentickets.length]
+                    }
+                ]
+            }
         },
     },
 

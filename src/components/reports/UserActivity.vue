@@ -54,14 +54,6 @@
         </v-row>
         <v-row>
             <v-col cols="4">
-                <v-select filled label="Select status" v-model="selected_status" :items="status_list"></v-select>
-            </v-col>
-            <v-col cols="4">
-                <v-text-field filled label="Search" v-model="search" append-icon="mdi-magnify"></v-text-field>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="4">
                 <v-autocomplete filled label="Select user" item-value="id" v-model="selected_user" item-text="name" :items="users">
                     <template v-slot:item="data">
                         <template>
@@ -72,6 +64,53 @@
                         </template>
                     </template>
                 </v-autocomplete>
+            </v-col>
+            <v-col cols="4">
+                <v-text-field filled label="Search" v-model="search" append-icon="mdi-magnify"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row >
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row align-content="center" justify="center">
+                            <v-col cols="12">
+                                <h3>Open Tickets</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="red--text">{{ opentickets.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row align-content="center" justify="center">
+                            <v-col cols="12">
+                                <h3>Followups</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="orange--text">{{ followups.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="4">
+                <v-card elevation="5">
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <h3>Closed Tickets</h3>
+                            </v-col>
+                            <v-col cols="12">
+                                <h1 class="green--text">{{ closedtickets.length }}</h1>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
         <v-row>
@@ -284,20 +323,20 @@ export default {
         },
 
         opentickets() {
-            return this.tickets.filter((item) => {
-                return item.status == 'open'
+            return this.filt_tickets.filter((item) => {
+                return item.activity == 'open'
             })
         },
 
         followups() {
-            return this.tickets.filter((item) => {
-                return item.status == 'followup'
+            return this.filt_tickets.filter((item) => {
+                return item.activity == 'followup'
             })
         },
 
         closedtickets() {
-            return this.tickets.filter((item) => {
-                return item.status == 'closed'
+            return this.filt_tickets.filter((item) => {
+                return item.activity == 'closed'
             })
         },
 
