@@ -112,7 +112,6 @@ export default new Vuex.Store({
     getUsers ({commit}) {
       pocketbase.collection('users').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_USERS', records)
       })
       .catch((err) => console.log(err))
@@ -121,7 +120,6 @@ export default new Vuex.Store({
     getIssues ({commit}) {
       pocketbase.collection('issues').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_ISSUES', records)
       })
       .catch((err) => console.log(err))
@@ -130,7 +128,6 @@ export default new Vuex.Store({
     getSolutions ({commit}) {
       pocketbase.collection('solutions').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_SOLUTIONS', records)
       })
       .catch((err) => console.log(err))
@@ -139,7 +136,6 @@ export default new Vuex.Store({
     getSites ({commit}) {
       pocketbase.collection('sites').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_SITES', records)
       })
       .catch((err) => console.log(err))
@@ -148,7 +144,6 @@ export default new Vuex.Store({
     getStations ({commit}) {
       pocketbase.collection('stations').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_STATIONS', records)
       })
       .catch((err) => console.log(err))
@@ -157,7 +152,6 @@ export default new Vuex.Store({
     getTickets ({commit}) {
       pocketbase.collection('tickets').getFullList()
       .then((records) => {
-        console.log(records);
         commit('SET_TICKETS', records)
       })
       .catch((err) => console.log(err))

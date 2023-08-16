@@ -119,7 +119,7 @@
         </v-row>
         <v-row>
             <v-col cols="12">
-                <LineChart />
+                <LineChart :chartData="LinechartData" />
             </v-col>
         </v-row>
     </v-container>
@@ -146,6 +146,24 @@ export default {
         selectedInv: null,
         paymentmodes: ['Bank Transfer', 'Cash', 'Cheque', 'Credit Card', 'Debit Card', 'G-Pay', 'Paytm', 'PhonePe'],
         mop: null,
+        LinechartData: {
+          labels: [],
+          datasets: [
+            {
+              label: 'Tikets opened',
+              backgroundColor: 'orange',
+              borderColor: 'rgb(75, 192, 192)',
+              data: [],
+              tension: 0.1
+            },
+            {
+              label: 'Tikets closed',
+              backgroundColor: 'green',
+              data: [],
+              tension: 0.1
+            },
+          ]
+        },
         
     }),
     components: {
@@ -156,6 +174,31 @@ export default {
 
         toLocalDate(date) {
             return new Date(+date).toLocaleDateString('en-IN')
+        },
+
+        dayDataPrep(f) {
+            //let days = []
+            this.LinechartData.labels = []
+            this.LinechartData.datasets[0].data = []
+            this.LinechartData.datasets[1].data = []
+            let temp = null
+            let fdate = f
+            let today = new Date().getTime()
+            while( fdate <= today ) {
+                temp = new Date(fdate)
+                this.LinechartData.labels.push(this.toLocalDate(temp))
+                let open_tcount = this.tickets.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let closed_tcount = this.closedtickets.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                console.log(open_tcount.length, closed_tcount.length);
+                this.LinechartData.datasets[0].data.push(open_tcount.length)
+                this.LinechartData.datasets[1].data.push(closed_tcount.length)
+                temp.setDate(temp.getDate() + 1)
+                fdate = temp.getTime()
+            }
         },
 
         dateFilters() {
@@ -172,6 +215,7 @@ export default {
                 nex.setHours(0,0,0,0)
                 this.frange = date.getTime()
                 this.trange = nex.getTime()
+                this.dayDataPrep(this.frange)
             }
             if(this.duration == 'Last 7 days') {
                 let date = new Date()
@@ -184,6 +228,7 @@ export default {
                 tdate.setHours(0,0,0,0)
                 this.frange = fdate.getTime()
                 this.trange = tdate.getTime()
+                this.dayDataPrep(this.frange)
             }
             if(this.duration == 'Select range') {
                 this.frange = new Date(this.fdate).getTime()
@@ -192,6 +237,7 @@ export default {
                 tdate.setDate(day + 1)
                 tdate.setHours(0,0,0,0)
                 this.trange = tdate.getTime()
+                this.dayDataPrep(this.frange)
             }
         },
     },

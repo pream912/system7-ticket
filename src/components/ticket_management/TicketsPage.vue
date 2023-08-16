@@ -97,12 +97,6 @@
                                     <v-autocomplete :readonly="watching" :rules="reqRule" outlined label="Issue" item-value="name" v-model="issue" item-text="name" :items="issues"></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-autocomplete :readonly="watching" :rules="reqRule" outlined label="Solution" item-value="name" v-model="solution" item-text="name" :items="solutions"></v-autocomplete>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field :readonly="watching" outlined label="Remarks" v-model="remarks"></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
                                     <v-data-table
                                 :headers="headers1"
                                 :items="log"
@@ -143,8 +137,9 @@
                 <v-card>
                     <v-card-title>Update ticket</v-card-title>
                     <v-card-text>
-                        <v-form>
-                            <v-select outlined v-model="t_action" :items="action_list" label="Select action"></v-select>
+                        <v-form ref="updateForm">
+                            <v-select outlined :rules="reqRule" v-model="t_action" :items="action_list" label="Select action"></v-select>
+                            <v-autocomplete v-if="t_action == 'Close ticket'" :rules="reqRule" outlined label="Solution" item-value="name" v-model="solution" item-text="name" :items="solutions"></v-autocomplete>
                             <v-text-field outlined v-model="t_remark" label="Remark"></v-text-field>
                         </v-form>
                     </v-card-text>
@@ -194,7 +189,7 @@ export default {
         status_list: ['closed', 'followup'],
         action_list: ['Close ticket', 'Followup'],
         t_remark: '',
-        t_action: null,
+        t_action: 'Close ticket',
         remarks: null,
         batch: null,
         site: null,
@@ -259,15 +254,19 @@ export default {
             this.site = item.site
             this.station = item.station
             this.issue = item.issue
-            this.solution = item.solution
-            this.remarks = item.remarks
             this.log = item.log
             this.selectedItem = item
             console.log(item)
         },
 
-        updateTicket() {
+        async updateTicket() {
             this.loading = true
+            let valid = await this.$refs.updateForm.validate()
+            if(!valid) {
+                this.$store.dispatch('createAlert',{type: 'error', message: 'Fill all required fields'})
+                this.loading = false
+                return
+            }
             let item = this.selectedItem
             let log = item.log
             let timestamp = new Date().getTime()
@@ -297,6 +296,7 @@ export default {
                     log:log,
                     closedOn: timestamp,
                     attendedBy: this.user.id,
+                    solution: this.solution,
                     status: this.t_action == 'Followup' ? 'followup' : 'closed',
                 })
                 .then(() => {
