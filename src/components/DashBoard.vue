@@ -146,25 +146,9 @@ export default {
         selectedInv: null,
         paymentmodes: ['Bank Transfer', 'Cash', 'Cheque', 'Credit Card', 'Debit Card', 'G-Pay', 'Paytm', 'PhonePe'],
         mop: null,
-        LinechartData: {
-          labels: [],
-          datasets: [
-            {
-              label: 'Tikets opened',
-              backgroundColor: 'orange',
-              borderColor: 'rgb(75, 192, 192)',
-              data: [],
-              tension: 0.1
-            },
-            {
-              label: 'Tikets closed',
-              backgroundColor: 'green',
-              data: [],
-              tension: 0.1
-            },
-          ]
-        },
-        
+        labels: [],
+        data1: [],
+        data2: [],     
     }),
     components: {
         DoughnutChart,
@@ -177,25 +161,23 @@ export default {
         },
 
         dayDataPrep(f) {
-            //let days = []
-            this.LinechartData.labels = []
-            this.LinechartData.datasets[0].data = []
-            this.LinechartData.datasets[1].data = []
+            this.labels = []
+            this.data1 = []
+            this.data2 = []
             let temp = null
             let fdate = f
             let today = new Date().getTime()
             while( fdate <= today ) {
                 temp = new Date(fdate)
-                this.LinechartData.labels.push(this.toLocalDate(temp))
+                this.labels.push(this.toLocalDate(temp))
                 let open_tcount = this.tickets.filter((item) => {
                     return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
                 })
                 let closed_tcount = this.closedtickets.filter((item) => {
                     return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
                 })
-                console.log(open_tcount.length, closed_tcount.length);
-                this.LinechartData.datasets[0].data.push(open_tcount.length)
-                this.LinechartData.datasets[1].data.push(closed_tcount.length)
+                this.data1.push(open_tcount.length)
+                this.data2.push(closed_tcount.length)
                 temp.setDate(temp.getDate() + 1)
                 fdate = temp.getTime()
             }
@@ -238,6 +220,10 @@ export default {
                 tdate.setHours(0,0,0,0)
                 this.trange = tdate.getTime()
                 this.dayDataPrep(this.frange)
+            }
+            if(this.duration == 'All') {
+                let first = this.tickets.sort((a,b) => +b.ticket_id - +a.ticket_id)[this.tickets.length - 1]
+                this.dayDataPrep(first.ticket_id)
             }
         },
     },
@@ -283,6 +269,28 @@ export default {
                 ]
             }
         },
+
+        LinechartData() {
+            return {
+                labels: this.labels,
+                datasets: [
+                    {
+                        label: 'Tikets opened',
+                        backgroundColor: 'orange',
+                        borderColor: '#EF5350',
+                        data: this.data1,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Tikets closed',
+                        backgroundColor: 'green',
+                        borderColor: '#66BB6A',
+                        data: this.data2,
+                        tension: 0.1
+                    },
+                ]
+            }
+        }
     },
 
     mounted() {

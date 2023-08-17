@@ -27,7 +27,7 @@
                             <v-list-item-title>Users</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item class="ml-4" link to="/access">
+                    <v-list-item class="ml-4" link to="/uac">
                         <v-list-item-content>
                             <v-list-item-title>Access control</v-list-item-title>
                         </v-list-item-content>
@@ -102,6 +102,19 @@
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>
+                <v-list-group
+                    :value="false"
+                    prepend-icon="mdi-cog"
+                >
+                    <template v-slot:activator>
+                        <v-list-item-title>Settings</v-list-item-title>
+                    </template>
+                    <v-list-item class="ml-4" link to="/emailsettings">
+                        <v-list-item-content>
+                            <v-list-item-title>Email settings</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
@@ -114,7 +127,8 @@
         </v-navigation-drawer>
         <v-app-bar app clipped-left>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>System7</v-toolbar-title>
+            <v-img :src="require('../assets/st-engineering.png')" max-width="150"></v-img>
+            <!-- <v-toolbar-title>System7</v-toolbar-title> -->
             <v-spacer></v-spacer>
             <v-avatar>
                 <v-icon>
@@ -150,6 +164,9 @@ export default {
     },
     isAdmin () {
         return true
+    },
+    access() {
+        return this.$store.getters.loadedPermissions
     }
   }
 };

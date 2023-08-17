@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import DashBoard from '../components/DashBoard.vue'
 import DesignationPage from '../components/user_management/DesignationPage.vue'
 import UsersPage from '../components/user_management/UsersPage.vue'
+import AccessControl from '../components/user_management/AccessControl.vue'
 import IssuesPage from '../components/ticket_management/IssuesPage.vue'
 import SolutionsPage from '../components/ticket_management/SolutionsPage.vue'
 import SitesPage from '../components/site_management/SitesPage.vue'
@@ -12,6 +13,7 @@ import TicketStatus from '../components/reports/TicketStatus.vue'
 import UserActivity from '../components/reports/UserActivity.vue'
 import DurationTaken from '../components/reports/DurationTaken.vue'
 import IssueWise from '../components/reports/IssueWise.vue'
+import EmailSettings from '../components/EmailSettings.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +29,10 @@ const routes = [
   {
     path: '/users',
     component: UsersPage
+  },
+  {
+    path: '/uac',
+    component: AccessControl
   },
   {
     path: '/issues',
@@ -63,6 +69,10 @@ const routes = [
   {
     path: '/issuewise',
     component: IssueWise
+  },
+  {
+    path: '/emailsettings',
+    component: EmailSettings
   },
 ]
 
