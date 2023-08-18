@@ -1,7 +1,8 @@
 <template>
     <v-container>
+    <div v-if="access.includes(42)">
         <v-row>
-            <v-col cols="4">
+            <v-col v-if="access.includes(421)" cols="4">
                 <v-btn color="green" @click="dialog = true">Add Solution</v-btn>
             </v-col>
         </v-row>
@@ -12,7 +13,10 @@
                 :items="solutions"
                 >
                     <template v-slot:[`item.actions`]="{ item }">
-                        <v-btn small icon>
+                        <v-btn v-if="access.includes(422)" small icon>
+                            <v-icon @click="editSolution(item)" color="orange">mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn v-if="access.includes(423)" small icon>
                             <v-icon @click="deleteSolution(item)" color="red">mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -22,17 +26,19 @@
         <v-row>
             <v-dialog v-model="dialog" persistent max-width="500">
                 <v-card>
-                    <v-card-title>New Solution</v-card-title>
+                    <v-card-title>Solution Details</v-card-title>
                     <v-card-text>
                         <v-text-field label="Solution name" v-model="name"></v-text-field>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn @click="createSolution" :disabled="name == null || name == ''" :loading="loading" color="green">Save</v-btn>
+                        <v-btn v-if="editing" @click="updateSolution" :disabled="name == null || name == ''" :loading="loading" color="blue">Update</v-btn>
+                        <v-btn v-if="!editing" @click="createSolution" :disabled="name == null || name == ''" :loading="loading" color="green">Save</v-btn>
                         <v-btn @click="clear" color="red">Cancel</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -46,7 +52,9 @@ export default {
             {text: 'Actions', value: 'actions'},
         ],
         name: null,
-        loading: false
+        loading: false,
+        editing: false,
+        selectedItem: {}
     }),
 
     methods: {
@@ -65,6 +73,30 @@ export default {
                 this.clear()
             })
         },
+
+        editSolution(item) {
+            this.selectedItem = item
+            this.editing = true
+            this.name = item.name
+            this.dialog = true
+        },
+
+        updateSolution() {
+            this.loading = true
+            pocketbase.collection('solutions').update(this.selectedItem.id, {name: this.name})
+            .then((data) => {
+                console.log(data)
+                this.$store.dispatch('createAlert',{type: 'info', message: 'Solution updated'})
+                this.$store.dispatch('getSolutions')
+                this.clear()
+            })
+            .catch((err) => {
+                console.log(err.message)
+                this.$store.dispatch('createAlert',{type: 'error', message: err.message})
+                this.clear()
+            })
+        },
+         
         deleteSolution(item) {
             pocketbase.collection('solutions').delete(item.id)
             .then(() => {
@@ -86,6 +118,10 @@ export default {
     computed: {
         solutions () {
             return this.$store.getters.loadedSolutions
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     }
 }

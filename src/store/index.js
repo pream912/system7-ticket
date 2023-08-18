@@ -15,9 +15,13 @@ export default new Vuex.Store({
     sites: [],
     stations: [],
     tickets: [],
+    settings: {},
     permissions: []
   },
   getters: {
+    loadedSettings (state) {
+      return state.settings
+    },
     loadedPermissions (state) {
       return state.permissions
     },
@@ -64,8 +68,10 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    SET_SETTINGS (state, payload) {
+      state.settings = payload
+    },
     SET_PERMISSIONS (state, payload) {
-      console.log(payload);
       state.permissions = payload
     },
     setAlert (state, payload) {
@@ -125,13 +131,13 @@ export default new Vuex.Store({
       .catch((err) => console.log(err))
     },
 
-    getPermissions({commit}) {
+    getSettings({commit}) {
       let level = pocketbase.authStore.model.access_level
       pocketbase.collection('settings').getFullList()
       .then((rec) => {
         let uac = rec[0].uac
+        commit('SET_SETTINGS', rec[0])
         if(level == 'Level1') {
-          console.log(uac.l1);
           commit('SET_PERMISSIONS', uac.l1)
         }
         if(level == 'Level2') {

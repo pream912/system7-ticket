@@ -1,5 +1,6 @@
 <template>
     <v-container>
+    <div v-if="access.includes(1)">
         <v-row>
             <v-col cols="12">
                 <h2>Dashboard</h2>
@@ -122,6 +123,7 @@
                 <LineChart :chartData="LinechartData" />
             </v-col>
         </v-row>
+    </div> 
     </v-container>
 </template>
 
@@ -290,6 +292,10 @@ export default {
                     },
                 ]
             }
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     },
 

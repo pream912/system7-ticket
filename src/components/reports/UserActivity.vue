@@ -1,5 +1,6 @@
 <template>
     <v-container>
+    <div v-if="access.includes(52)">
         <v-row>
             <v-col cols="12">
                 <h2>User Activity report</h2>
@@ -139,6 +140,7 @@
                 </v-data-table>
             </v-col>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -377,6 +379,10 @@ export default {
 
         users() {
             return this.$store.getters.loadedUsers
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     },
 

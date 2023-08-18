@@ -1,8 +1,9 @@
 <template>
     <v-container>
+    <div v-if="access.includes(43)">
         <v-row>
             <v-col cols="12">
-                <v-btn color="green" @click="dialog = true">New Ticket</v-btn>
+                <v-btn v-if="access.includes(431)" color="green" @click="dialog = true">New Ticket</v-btn>
             </v-col>
             <v-col cols="4">
                 <v-select @change="dateFilters" value="Current month" filled label="Duration" v-model="duration" :items="duraList"></v-select>
@@ -62,11 +63,11 @@
                 :search="search"
                 >
                     <template v-slot:[`item.actions`]="{ item }">
-                        <v-btn v-if="item.status == 'open'" small icon>
-                            <v-icon @click="deleteTicket(item)" color="red">mdi-delete</v-icon>
-                        </v-btn>
                         <v-btn small icon @click="openTicket(item)">
                             <v-icon class="green--text">mdi-open-in-new</v-icon>
+                        </v-btn>
+                        <v-btn v-if="item.status == 'open' && access.includes(433)" small icon>
+                            <v-icon @click="deleteTicket(item)" color="red">mdi-delete</v-icon>
                         </v-btn>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
@@ -98,27 +99,27 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-data-table
-                                :headers="headers1"
-                                :items="log"
-                                hide-default-footer
-                                dense
-                                >
-                                    <template v-slot:[`item.updatedBy`]="{ item }">
-                                        <div>{{ getUserName(item.updatedBy) }}</div>
-                                    </template>
-                                    <template v-slot:[`item.timestamp`]="{ item }">
-                                        <div>{{ toLocalDate(item.timestamp) }}</div>
-                                    </template>
-                                    <template v-slot:[`item.time`]="{ item }">
-                                        <div>{{ toLocalTime(item.timestamp) }}</div>
-                                    </template>
-                                    <template v-slot:[`item.action`]="{ item }">
-                                        <div>{{ item.action }}</div>
-                                    </template>
-                                    <template v-slot:[`item.remarks`]="{ item }">
-                                        <div>{{ item.remarks }}</div>
-                                    </template>
-                                </v-data-table>
+                                    :headers="headers1"
+                                    :items="log"
+                                    hide-default-footer
+                                    dense
+                                    >
+                                        <template v-slot:[`item.updatedBy`]="{ item }">
+                                            <div>{{ getUserName(item.updatedBy) }}</div>
+                                        </template>
+                                        <template v-slot:[`item.timestamp`]="{ item }">
+                                            <div>{{ toLocalDate(item.timestamp) }}</div>
+                                        </template>
+                                        <template v-slot:[`item.time`]="{ item }">
+                                            <div>{{ toLocalTime(item.timestamp) }}</div>
+                                        </template>
+                                        <template v-slot:[`item.action`]="{ item }">
+                                            <div>{{ item.action }}</div>
+                                        </template>
+                                        <template v-slot:[`item.remarks`]="{ item }">
+                                            <div>{{ item.remarks }}</div>
+                                        </template>
+                                    </v-data-table>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -126,7 +127,7 @@
                             <v-btn v-if="!watching" :loading="loading" @click="createTicket" color="green">Save</v-btn>
                             <v-btn color="red" @click="clear">Close</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn v-if="watching" @click="dialog1 = true" color="blue">Update</v-btn>
+                            <v-btn v-if="watching && access.includes(432)" @click="dialog1 = true" color="blue">Update</v-btn>
                         </v-card-actions>
                     </v-form>
                 </v-card>
@@ -150,6 +151,7 @@
                 </v-card>
             </v-dialog>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -458,6 +460,10 @@ export default {
         user() {
             return pocketbase.authStore.model
         },
+
+        access() {
+            return this.$store.getters.loadedPermissions
+        }
     }, 
     mounted() {
         this.dateFilters()

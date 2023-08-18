@@ -1,5 +1,6 @@
 <template>
     <v-container>
+    <div v-if="access.includes(51)">
         <v-row>
             <v-col cols="12">
                 <h2>Ticket Status report</h2>
@@ -144,6 +145,7 @@
                 </v-data-table>
             </v-col>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -343,6 +345,10 @@ export default {
             } else {
                 return this.prepTickets(this.closedtickets)
             }
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     },
 

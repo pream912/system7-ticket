@@ -17,7 +17,7 @@ new Vue({
     pocketbase.authStore.onChange(() => {
       if(pocketbase.authStore.model) {
         store.commit('SET_LOGGED_IN', true)
-        store.dispatch('getPermissions')
+        store.dispatch('getSettings')
         store.dispatch('getDesignations')
         store.dispatch('getUsers')
         store.dispatch('getIssues')

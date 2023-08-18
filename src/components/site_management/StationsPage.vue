@@ -1,7 +1,8 @@
 <template>
     <v-container>
+    <div v-if="access.includes(32)">
         <v-row>
-            <v-col cols="4">
+            <v-col v-if="access.includes(321)" cols="4">
                 <v-btn color="green" @click="dialog = true">Add Station</v-btn>
             </v-col>
         </v-row>
@@ -12,7 +13,10 @@
                 :items="stations"
                 >
                     <template v-slot:[`item.actions`]="{ item }">
-                        <v-btn small icon>
+                        <v-btn v-if="access.includes(322)" small icon>
+                            <v-icon @click="editStation(item)" color="orange">mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn v-if="access.includes(323)" small icon>
                             <v-icon @click="deleteStation(item)" color="red">mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -22,9 +26,9 @@
         <v-row>
             <v-dialog v-model="dialog" persistent max-width="500">
                 <v-card>
-                    <v-card-title>New Station</v-card-title>
+                    <v-card-title>Station Details</v-card-title>
                     <v-card-text>
-                        <v-text-field outlined label="Site name" v-model="name"></v-text-field>
+                        <v-text-field outlined label="Station name" v-model="name"></v-text-field>
                         <v-select outlined label="Select Batch" v-model="batch" :items="batch_list"></v-select>
                         <v-autocomplete outlined label="Site" item-value="name" v-model="site" item-text="name" :items="sites"></v-autocomplete>
                     </v-card-text>
@@ -35,6 +39,7 @@
                 </v-card>
             </v-dialog>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -53,6 +58,8 @@ export default {
         batch: null,
         site: null,
         loading: false,
+        editing: false,
+        selectedItem: {},
         batch_list: ['BT39', 'CCK', 'WDLS'],
     }),
 
@@ -72,6 +79,32 @@ export default {
                 this.clear()
             })
         },
+
+        editStation(item) {
+            this.editing = true
+            this.selectedItem = item
+            this.name = item.name
+            this.batch = item.batch
+            this.site = item.site
+            this.dialog = true
+        },
+
+        updateStation() {
+            this.loading = true
+            pocketbase.collection('stations').update(this.selectedItem.id, {name: this.name, site: this.site, batch: this.batch})
+            .then((data) => {
+                console.log(data)
+                this.$store.dispatch('createAlert',{type: 'info', message: 'Station updated'})
+                this.$store.dispatch('getStations')
+                this.clear()
+            })
+            .catch((err) => {
+                console.log(err.message)
+                this.$store.dispatch('createAlert',{type: 'error', message: err.message})
+                this.clear()
+            })
+        },
+
         deleteStation(item) {
             pocketbase.collection('stations').delete(item.id)
             .then(() => {
@@ -87,7 +120,9 @@ export default {
             this.name = null
             this.site = null
             this.batch = null
-            this.dialog = null
+            this.dialog = false
+            this.editing = false
+            this.selectedItem = {}
             this.loading = false
         }
     },
@@ -106,6 +141,10 @@ export default {
 
         stations () {
             return this.$store.getters.loadedStations
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     }
 }

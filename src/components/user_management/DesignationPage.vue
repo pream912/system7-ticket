@@ -1,8 +1,9 @@
 <template>
     <v-container>
+    <div v-if="access.includes(21)">
         <v-row>
             <v-col cols="4">
-                <v-btn @click="dialog = true" color="green">New Designation</v-btn>
+                <v-btn v-if="access.includes(211)" @click="dialog = true" color="green">New Designation</v-btn>
             </v-col>
         </v-row>
         <v-row>
@@ -12,7 +13,10 @@
                 :items="designations"
                 >
                     <template v-slot:[`item.actions`]="{ item }">
-                        <v-btn small icon>
+                        <v-btn v-if="access.includes(212)" small icon>
+                            <v-icon @click="editDesi(item)" color="orange">mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn v-if="access.includes(213)" small icon>
                             <v-icon @click="deleteDesi(item)" color="red">mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -28,11 +32,13 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn @click="createDesignation" :disabled="name == null || name == ''" :loading="loading" color="green">Save</v-btn>
+                        <v-btn @click="updateDesi" :disabled="name == null || name == ''" :loading="loading" color="blue">Update</v-btn>
                         <v-btn @click="clear" color="red">Cancel</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -46,7 +52,9 @@ export default {
         ],
         name: null,
         dialog: false,
-        loading: false
+        loading: false,
+        editing: false,
+        selectedItem: {}
     }),
 
     methods: {
@@ -56,6 +64,27 @@ export default {
             .then((data) => {
                 console.log(data)
                 this.$store.dispatch('createAlert',{type: 'success', message: 'Designation created'})
+                this.$store.dispatch('getDesignations')
+                this.clear()
+            })
+            .catch((err) => {
+                console.log(err.message)
+                this.$store.dispatch('createAlert',{type: 'error', message: err.message})
+                this.clear()
+            })
+        },
+
+        editDesi(item) {
+            this.name = item.name
+            this.selectedItem = item
+            this.editing = true
+        },
+
+        updateDesi() {
+            pocketbase.collection('designations').update(this.selectedItem.id, {name: this.name})
+            .then((data) => {
+                console.log(data)
+                this.$store.dispatch('createAlert',{type: 'info', message: 'Designation updated'})
                 this.$store.dispatch('getDesignations')
                 this.clear()
             })
@@ -80,6 +109,8 @@ export default {
         clear() {
             this.name = null
             this.dialog = null
+            this.editing = false
+            this.selectedItem = {}
             this.loading = false
         }
     },
@@ -87,6 +118,10 @@ export default {
     computed: {
         designations () {
             return this.$store.getters.loadedDesignations
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     }
 }

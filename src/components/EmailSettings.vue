@@ -1,5 +1,6 @@
 <template>
     <v-container>
+    <div v-if="access.includes(61)">
         <v-row>
             <h3 class="ma-3">Email settings</h3>
         </v-row>
@@ -20,10 +21,11 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="4">
+            <v-col v-if="access.includes(611)" cols="4">
                 <v-btn @click="updateSettings" :loading="loading" color="green">Update</v-btn>
             </v-col>
         </v-row>
+    </div>
     </v-container>
 </template>
 
@@ -71,6 +73,12 @@ export default {
                 this.$store.dispatch('createAlert',{type: 'error', message: err.message})
                 this.loading = false
             })
+        }
+    },
+
+    computed: {
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     },
 

@@ -1,5 +1,6 @@
 <template>
     <v-container>
+    <div v-if="access.includes(23)">
         <v-row>
             <v-col cols="12">
                 <h3>User Access Control</h3>
@@ -14,7 +15,6 @@
             <v-col cols="12">
                 <v-treeview
                     selectable
-                    :disabled="false"
                     :items="items"
                     selection-type="independent"
                     v-model="selection"
@@ -23,10 +23,12 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="4">
+            <v-col v-if="access.includes(231)" cols="4">
                 <v-btn color="green" @click="updateUac" :loading="loading">Update</v-btn>
             </v-col>
         </v-row>
+    </div>
+    {{ selection }}
     </v-container>
 </template>
 
@@ -36,7 +38,7 @@ export default {
     data: () => ({
         access_level: 'Level1',
         access_list: ['Level1', 'Level2', 'Level3', 'Level4', 'Level5'],
-        selection: [111],
+        selection: [],
         items: [
             {
                 id: 1,
@@ -104,7 +106,7 @@ export default {
                     {id: 43, name: 'Tickets',
                     children: [
                         {id: 431, name: 'Create'},
-                        {id: 432, name: 'Edit'},
+                        {id: 432, name: 'Update'},
                         {id: 433, name: 'Delete'},
                     ]},
                 ]
@@ -112,6 +114,12 @@ export default {
             {
                 id: 5,
                 name: 'Reports',
+                children: [
+                    {id: 51, name: 'Ticket Status'},
+                    {id: 52, name: 'User activity'},
+                    {id: 53, name: 'Duration taken'},
+                    {id: 54, name: 'Issue wise'},
+                ]
             },
             {
                 id: 6,
@@ -125,20 +133,23 @@ export default {
             }
         ],
         id: null,
-        uac: {},
+        uac: {
+            l1: [],
+            l2: [],
+            l3: [],
+            l4: [],
+            l5: []
+        },
         loading: false
     }),
 
     methods: {
         getSettings() {
-            pocketbase.collection('settings').getFullList()
-            .then((records) => {
-                let settings = records[0]
-                this.id = settings.id
-                this.uac = settings.uac
-                this.access_level = 'Level1'
-                this.selection = this.uac.l1
-            })
+            let settings = this.settings
+            this.id = settings.id
+            this.uac = settings.uac
+            this.access_level = 'Level1'
+            this.selection = this.uac.l1
         },
 
         updateUac() {
@@ -158,7 +169,6 @@ export default {
         },
 
         updateObject() {
-            console.log('working');
             if(this.access_level == 'Level1') {
                 this.uac.l1 = this.selection
             }
@@ -192,6 +202,16 @@ export default {
             if(this.access_level == 'Level5') {
                 this.selection = this.uac.l5 
             }
+        }
+    },
+
+    computed: {
+        settings() {
+            return this.$store.getters.loadedSettings
+        },
+
+        access() {
+            return this.$store.getters.loadedPermissions
         }
     },
 
