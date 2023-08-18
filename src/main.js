@@ -16,15 +16,19 @@ new Vue({
   created() {
     pocketbase.authStore.onChange(() => {
       if(pocketbase.authStore.model) {
-        store.commit('SET_LOGGED_IN', true)
-        store.dispatch('getSettings')
-        store.dispatch('getDesignations')
-        store.dispatch('getUsers')
-        store.dispatch('getIssues')
-        store.dispatch('getSolutions')
-        store.dispatch('getSites')
-        store.dispatch('getStations')
-        store.dispatch('getTickets')
+        if(!pocketbase.authStore.model.status) {
+          alert("Your account has been deactivated!");
+        } else {
+          store.commit('SET_LOGGED_IN', true)
+          store.dispatch('getSettings')
+          store.dispatch('getDesignations')
+          store.dispatch('getUsers')
+          store.dispatch('getIssues')
+          store.dispatch('getSolutions')
+          store.dispatch('getSites')
+          store.dispatch('getStations')
+          store.dispatch('getTickets')
+        }  
       } else {
         store.commit('SET_LOGGED_IN', false)
       }

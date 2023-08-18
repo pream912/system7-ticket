@@ -56,11 +56,22 @@ export default {
     }),
 
     methods: {
-        async login() {
-            await pocketbase.collection('users').authWithPassword(this.username, this.password)
-            console.log(pocketbase.authStore)
-
+        login() {
             this.loading = true
+            pocketbase.collection('users').authWithPassword(this.username, this.password)
+            .then(() => {
+                if(!pocketbase.authStore.model.satus) {
+                    this.loading = false
+                    pocketbase.authStore.clear()
+                    this.$store.dispatch('createAlert',{type: 'error', message: 'Your account has been deactivated!'})
+                }
+            })
+            .catch((err) => {
+                alert(err.message)
+                this.$store.dispatch('createAlert',{type: 'error', message: err.message})
+                this.loading = false
+            })
+            
         
         },
  
