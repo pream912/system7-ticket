@@ -17,6 +17,7 @@ new Vue({
     pocketbase.authStore.onChange(() => {
       if(pocketbase.authStore.model) {
         if(!pocketbase.authStore.model.status) {
+          pocketbase.authStore.clear()
           alert("Your account has been deactivated!");
         } else {
           store.commit('SET_LOGGED_IN', true)

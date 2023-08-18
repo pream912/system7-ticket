@@ -28,7 +28,6 @@
             </v-col>
         </v-row>
     </div>
-    {{ selection }}
     </v-container>
 </template>
 
