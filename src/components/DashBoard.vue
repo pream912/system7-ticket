@@ -259,6 +259,60 @@ export default {
                 return item.status == 'closed'
             })
         },
+        filt_tickets() {
+            let st = this.tickets
+            let attended_by = null
+            let ft = []
+            let log = []
+            for(let i in st) {
+                log = st[i].log
+                for(let j in log) {
+                    attended_by = `${this.$store.getters.loadedUser(log[j].updatedBy).name} (${this.$store.getters.loadedUser(log[j].updatedBy).designation})`
+                    ft.push({
+                        ticket_id: st[i].ticket_id,
+                        current_status: st[i].status,
+                        attended_by: attended_by,
+                        user_id: log[j].updatedBy,
+                        id: st[i].id,
+                        activity: log[j].action,
+                        timestamp: log[j].timestamp
+                    })
+                }
+            }
+            return ft
+        },
+
+        processedData() {
+            let f = this.frange
+            let temp = null
+            let fdate = f
+            let today = new Date().getTime()
+            let labels = []
+            let data1 = []
+            let data2 = []
+            let data3 = []
+            while( fdate <= today ) {
+                temp = new Date(fdate)
+                labels.push(this.toLocalDate(temp))
+                let open_tcount = this.tickets.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let closed_tcount = this.closedtickets.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let followup_tcount = this.filt_tickets.filter((item) => {
+                    return item.activity == 'followup' && this.toLocalDate(item.timestamp) == this.toLocalDate(temp)
+                })
+                data1.push(closed_tcount.length)
+                data2.push(followup_tcount.length)
+                data3.push(open_tcount.length)
+                temp.setDate(temp.getDate() + 1)
+                fdate = temp.getTime()
+            }
+            return {
+                labels,data1,data2,data3
+            }
+        },
 
         chartData() { 
             return {
@@ -274,20 +328,27 @@ export default {
 
         LinechartData() {
             return {
-                labels: this.labels,
+                labels: this.processedData.labels,
                 datasets: [
                     {
-                        label: 'Tikets opened',
-                        backgroundColor: 'orange',
-                        borderColor: '#EF5350',
-                        data: this.data1,
+                        label: 'Tickets closed',
+                        backgroundColor: 'green',
+                        borderColor: '#66BB6A',
+                        data: this.processedData.data1,
                         tension: 0.1
                     },
                     {
-                        label: 'Tikets closed',
-                        backgroundColor: 'green',
-                        borderColor: '#66BB6A',
-                        data: this.data2,
+                        label: 'Tickets followup',
+                        backgroundColor: '#E65100',
+                        borderColor: '#FFA726',
+                        data: this.processedData.data2,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Tickets opened',
+                        backgroundColor: '#B71C1C',
+                        borderColor: '#EF5350',
+                        data: this.processedData.data3,
                         tension: 0.1
                     },
                 ]

@@ -116,7 +116,7 @@ export default new Vuex.Store({
     },
 
     getDesignations ({commit}) {
-      pocketbase.collection('designations').getFullList()
+      pocketbase.collection('designations').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_DESIGNATIONS', records)
       })
@@ -124,7 +124,7 @@ export default new Vuex.Store({
     },
 
     getUsers ({commit}) {
-      pocketbase.collection('users').getFullList()
+      pocketbase.collection('users').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_USERS', records)
       })
@@ -157,7 +157,7 @@ export default new Vuex.Store({
     },
 
     getIssues ({commit}) {
-      pocketbase.collection('issues').getFullList()
+      pocketbase.collection('issues').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_ISSUES', records)
       })
@@ -165,7 +165,7 @@ export default new Vuex.Store({
     },
 
     getSolutions ({commit}) {
-      pocketbase.collection('solutions').getFullList()
+      pocketbase.collection('solutions').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_SOLUTIONS', records)
       })
@@ -173,7 +173,7 @@ export default new Vuex.Store({
     },
 
     getSites ({commit}) {
-      pocketbase.collection('sites').getFullList()
+      pocketbase.collection('sites').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_SITES', records)
       })
@@ -181,7 +181,7 @@ export default new Vuex.Store({
     },
 
     getStations ({commit}) {
-      pocketbase.collection('stations').getFullList()
+      pocketbase.collection('stations').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_STATIONS', records)
       })
@@ -189,7 +189,7 @@ export default new Vuex.Store({
     },
 
     getTickets ({commit}) {
-      pocketbase.collection('tickets').getFullList()
+      pocketbase.collection('tickets').getFullList({sort: '-created',})
       .then((records) => {
         commit('SET_TICKETS', records)
       })
