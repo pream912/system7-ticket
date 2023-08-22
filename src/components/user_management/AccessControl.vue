@@ -36,7 +36,7 @@ import { pocketbase } from '../../pocketbase'
 export default {
     data: () => ({
         access_level: 'Level1',
-        access_list: ['Level1', 'Level2', 'Level3', 'Level4', 'Level5'],
+        access_list: ['Level1', 'Level2', 'Level3', 'Level4'],
         selection: [],
         items: [
             {

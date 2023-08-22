@@ -13,7 +13,8 @@ import TicketStatus from '../components/reports/TicketStatus.vue'
 import UserActivity from '../components/reports/UserActivity.vue'
 import DurationTaken from '../components/reports/DurationTaken.vue'
 import IssueWise from '../components/reports/IssueWise.vue'
-import EmailSettings from '../components/EmailSettings.vue'
+import EmailSettings from '../components/settings/EmailSettings.vue'
+import TelegramSettings from '../components/settings/TelegramSettings.vue'
 
 Vue.use(VueRouter)
 
@@ -73,6 +74,10 @@ const routes = [
   {
     path: '/emailsettings',
     component: EmailSettings
+  },
+  {
+    path: '/telegramsettings',
+    component: TelegramSettings
   },
 ]
 

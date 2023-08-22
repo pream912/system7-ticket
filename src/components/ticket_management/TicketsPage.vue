@@ -157,6 +157,7 @@
 
 <script>
 import { pocketbase } from '../../pocketbase'
+// import axios from 'axios'
 export default {
     data: () => ({
         duraList: ['Current month', 'Last 7 days', 'All', 'Select range'],
@@ -209,6 +210,11 @@ export default {
     }),
 
     methods: {
+
+        // sendTelegram(message) {
+        //     axios.get()
+        // },
+
         async createTicket() {
             this.loading = true
             let valid = await this.$refs.ticketForm.validate()

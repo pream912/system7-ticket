@@ -106,7 +106,7 @@ export default {
         oldPassword: null,
         designation: null,
         access_level: null,
-        access_list: ['Level1', 'Level2', 'Level3', 'Level4', 'Level5'],
+        access_list: ['Level1', 'Level2', 'Level3', 'Level4'],
         dialiog: false,
         loading: false,
         search: null,

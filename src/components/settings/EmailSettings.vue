@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { pocketbase } from '../pocketbase'
+import { pocketbase } from '../../pocketbase'
 export default {
     data:() => ({
         from_email: null,

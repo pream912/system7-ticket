@@ -119,6 +119,11 @@
                             <v-list-item-title>Email settings</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+                    <v-list-item v-if="access.includes(61)" class="ml-4" link to="/telegramsettings">
+                        <v-list-item-content>
+                            <v-list-item-title>Telegram settings</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list-group>
             </v-list>
             <template v-slot:append>
