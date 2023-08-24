@@ -47,6 +47,7 @@
 import { pocketbase } from '../../pocketbase'
 export default {
     data: () => ({
+        csvfile: null,
         dialog: false,
         headers: [
             {text: 'Site', value: 'name'},
@@ -58,10 +59,59 @@ export default {
         batch_list: ['BT39', 'CCK', 'WDLS'],
         loading: false,
         editing: false,
-        selectedItem: {}
+        selectedItem: {},
+        json: ['1']
     }),
 
     methods: {
+        async importData() {
+            let file = this.csvfile
+            var reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = function(e) {
+                var jsonData = [];
+                var headers = [];
+                var rows = e.target.result.split("\r\n");               
+                for (var i = 0; i < rows.length; i++) {
+                    var cells = rows[i].split(",");
+                    var rowData = {};
+                    for(var j=0;j<cells.length;j++){
+                        if(i==0){
+                            var headerName = cells[j].trim();
+                            headers.push(headerName);
+                        }else{
+                            var key = headers[j];
+                            if(key){
+                                rowData[key] = cells[j].trim();
+                            }
+                        }
+                    }
+                    //skip the first row (header) data
+                    if(i!=0){
+                        jsonData.push(rowData);
+                    }
+                }
+                for(let i in jsonData) {
+                    pocketbase.collection('sites').create({name: jsonData[i].site, batch: jsonData[i].batch}, { '$autoCancel': false })
+                    .then((d) => console.log(d))
+                }
+                  
+                //displaying the json result in string format
+                }
+                console.log(reader);
+                //this.uploadData()
+            },
+
+        async uploadData() {
+            console.log('Uploading....');
+            let data = this.json
+            console.log(data)
+            for(let i in data) {
+                await pocketbase.collection('sites').create({name: data[i].site, batch: data[i].batch})
+                .then((d) => console.log(d))
+            }
+        },
+
         createSite() {
             this.loading = true
             pocketbase.collection('sites').create({name: this.name, batch: this.batch})

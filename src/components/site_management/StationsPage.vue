@@ -47,6 +47,7 @@
 import { pocketbase } from '../../pocketbase'
 export default {
     data: () => ({
+        csvfile: null,
         dialog: false,
         headers: [
             {text: 'Station', value: 'name'},
@@ -64,6 +65,44 @@ export default {
     }),
 
     methods: {
+        async importData() {
+            let file = this.csvfile
+            var reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = function(e) {
+                var jsonData = [];
+                var headers = [];
+                var rows = e.target.result.split("\r\n");               
+                for (var i = 0; i < rows.length; i++) {
+                    var cells = rows[i].split(",");
+                    var rowData = {};
+                    for(var j=0;j<cells.length;j++){
+                        if(i==0){
+                            var headerName = cells[j].trim();
+                            headers.push(headerName);
+                        }else{
+                            var key = headers[j];
+                            if(key){
+                                rowData[key] = cells[j].trim();
+                            }
+                        }
+                    }
+                    //skip the first row (header) data
+                    if(i!=0){
+                        jsonData.push(rowData);
+                    }
+                }
+                console.log(jsonData);
+                for(let i in jsonData) {
+                    pocketbase.collection('stations').create({name: jsonData[i].station, site: jsonData[i].site, batch: jsonData[i].batch}, { '$autoCancel': false })
+                    .then((d) => console.log(d))
+                }
+                  
+                //displaying the json result in string format
+                }
+                console.log(reader);
+                //this.uploadData()
+            },
         createStation() {
             this.loading = true
             pocketbase.collection('stations').create({name: this.name, site: this.site, batch: this.batch})

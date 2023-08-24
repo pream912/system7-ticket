@@ -157,7 +157,7 @@
 
 <script>
 import { pocketbase } from '../../pocketbase'
-// import axios from 'axios'
+import axios from 'axios'
 export default {
     data: () => ({
         duraList: ['Current month', 'Last 7 days', 'All', 'Select range'],
@@ -211,9 +211,9 @@ export default {
 
     methods: {
 
-        // sendTelegram(message) {
-        //     axios.get()
-        // },
+        sendTelegram(message) {
+            axios.get(`https://api.telegram.org/bot${this.settings.botkey}/sendMessage?chat_id=${this.settings.channelid}&text=${message}`)
+        },
 
         async createTicket() {
             this.loading = true
@@ -246,6 +246,8 @@ export default {
                 console.log(data)
                 this.$store.dispatch('createAlert',{type: 'success', message: 'Ticket created'})
                 this.$store.dispatch('getTickets')
+                let message = `Ticket ID ${ticket.ticket_id} has been opened by ${this.getUserName(ticket.createdBy)} for satation ${ticket.station}. Ticket status: Open`
+                this.sendTelegram(message)
                 this.clear()
             })
             .catch((err) => {
@@ -293,6 +295,8 @@ export default {
                 .then(() => {
                     this.$store.dispatch('createAlert',{type: 'info', message: 'Ticket updated'})
                     this.$store.dispatch('getTickets')
+                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action}`
+                    this.sendTelegram(message)
                     this.clear()
                 })
                 .catch((err) => {
@@ -469,7 +473,12 @@ export default {
 
         access() {
             return this.$store.getters.loadedPermissions
+        },
+
+        settings() {
+            return this.$store.getters.loadedSettings
         }
+
     }, 
     mounted() {
         this.dateFilters()

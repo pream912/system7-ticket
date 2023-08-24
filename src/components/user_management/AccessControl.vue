@@ -127,7 +127,11 @@ export default {
                     {id: 61, name: 'Email settings',
                     children: [
                         {id: 611, name: 'Edit'},
-                    ]}
+                    ]},
+                    {id: 62, name: 'Telegram settings',
+                    children: [
+                        {id: 621, name: 'Edit'},
+                    ]},
                 ]
             }
         ],
