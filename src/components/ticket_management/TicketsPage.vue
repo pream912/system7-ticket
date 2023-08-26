@@ -314,6 +314,8 @@ export default {
                 .then(() => {
                     this.$store.dispatch('createAlert',{type: 'info', message: 'Ticket updated'})
                     this.$store.dispatch('getTickets')
+                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action}`
+                    this.sendTelegram(message)
                     this.clear()
                 })
                 .catch((err) => {
