@@ -130,7 +130,7 @@
                 <div class="pa-2">
                     <v-switch label="Dark mode" v-model="$vuetify.theme.dark"></v-switch>
                 </div>
-                <div class="pa-2">
+                <div class="pa-2 mb-5">
                     <v-btn @click="logout" color="orange">Logout</v-btn>
                 </div>
             </template>

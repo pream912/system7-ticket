@@ -252,7 +252,7 @@ export default {
 
             for(let i in st) {
                 time_taken = +st[i].closedOn - +st[i].ticket_id
-                attended_by = st[i].attendedBy != "" ? `${this.$store.getters.loadedUser(st[i].createdBy).name} (${this.$store.getters.loadedUser(st[i].createdBy).designation})` : '-'
+                attended_by = st[i].attendedBy != "" ? `${this.$store.getters.loadedUser(st[i].attendedBy).name} (${this.$store.getters.loadedUser(st[i].attendedBy).designation})` : '-'
                 close_date = st[i].closedOn != 0 ? this.toLocalDate(st[i].closedOn) : '-'
                 if(st[i].status == 'closed') {
                     ft.push({
@@ -268,7 +268,7 @@ export default {
                         batch: st[i].batch,
                         issue: st[i].issue,
                         solution: st[i].solution,
-                        duration: new Date(time_taken * 1000).toISOString().slice(11, 19)
+                        duration: new Date(time_taken).toISOString().slice(11, 19)
                     })
                 }
             }
