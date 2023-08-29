@@ -257,13 +257,13 @@ export default {
                 if(st[i].status == 'closed') {
                     ft.push({
                         ticket_id: st[i].ticket_id,
-                        open_date: this.toLocalDate(st[i].ticket_id),
+                        open_date: `${this.toLocalDate(st[i].ticket_id)} ${this.toLocalTime(st[i].ticket_id)}`,
                         site: st[i].site,
                         station: st[i].station,
                         requested_by: `${this.$store.getters.loadedUser(st[i].createdBy).name} (${this.$store.getters.loadedUser(st[i].createdBy).designation})`,
                         status: st[i].status,
                         attended_by: attended_by,
-                        close_date: close_date,
+                        close_date: `${close_date} ${this.toLocalTime(st[i].closedOn)}`,
                         id: st[i].id,
                         batch: st[i].batch,
                         issue: st[i].issue,

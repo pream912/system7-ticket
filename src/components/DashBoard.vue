@@ -4,6 +4,7 @@
         <v-row>
             <v-col cols="12">
                 <h2>Dashboard</h2>
+                <div> {{processedData2}} </div>
             </v-col>
             <v-col cols="4">
                 <v-select @change="dateFilters" value="Current month" filled label="Duration" v-model="duration" :items="duraList"></v-select>
@@ -229,6 +230,12 @@ export default {
                 this.dayDataPrep(first.ticket_id)
             }
         },
+
+        issueFilter(issue) {
+            return this.tickets.filter((item) => {
+                return item.issue == issue
+            })
+        }
     },
 
     computed: {
@@ -312,6 +319,54 @@ export default {
             }
             return {
                 labels,data1,data2,data3
+            }
+        },
+
+        processedData2() {
+            let f = this.frange
+            let temp = null
+            let fdate = f
+            let today = new Date().getTime()
+            let labels = []
+            let data1 = []
+            let data2 = []
+            let data3 = []
+            let data4 = []
+            let data5 = []
+            let issue1 = this.issueFilter('Antenna Issue')
+            let issue2 = this.issueFilter('Arm damaged/broken')
+            let issue3 = this.issueFilter('Barrier arm drop /Barrier arm loose')
+            let issue4 = this.issueFilter('barrier not responding / Loop Hang')
+            let issue5 = this.issueFilter('UPS Power')
+            while( fdate <= today ) {
+                temp = new Date(fdate)
+                labels.push(this.toLocalDate(temp))
+                let issue1_count = issue1.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let issue2_count = issue2.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let issue3_count = issue3.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let issue4_count = issue4.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let issue5_count = issue5.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+
+                data1.push(issue1_count.length)
+                data2.push(issue2_count.length)
+                data3.push(issue3_count.length)
+                data4.push(issue4_count.length)
+                data5.push(issue5_count.length)
+                temp.setDate(temp.getDate() + 1)
+                fdate = temp.getTime()
+            }
+            return {
+                labels,data1,data2,data3, data4, data5
             }
         },
 
