@@ -1,6 +1,6 @@
 <template>
     <v-container>
-    <div v-if="access.includes(61)">
+    <div v-if="access.includes(62)">
         <v-row>
             <h3 class="ma-3">Telegram settings</h3>
         </v-row>
@@ -15,7 +15,7 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col v-if="access.includes(611)" cols="4">
+            <v-col v-if="access.includes(621)" cols="4">
                 <v-btn @click="updateSettings" :loading="loading" color="green">Update</v-btn>
             </v-col>
         </v-row>

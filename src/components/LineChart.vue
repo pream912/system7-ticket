@@ -79,7 +79,14 @@
       return {
         chartOptions: {
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
         }
       }
     }

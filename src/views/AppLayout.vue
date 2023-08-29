@@ -119,26 +119,31 @@
                             <v-list-item-title>Email settings</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item v-if="access.includes(61)" class="ml-4" link to="/telegramsettings">
+                    <v-list-item v-if="access.includes(62)" class="ml-4" link to="/telegramsettings">
                         <v-list-item-content>
                             <v-list-item-title>Telegram settings</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>
+                <v-list-item class="mt-5">
+                    <v-btn elevation="1" block @click="logout" color="orange">Logout</v-btn>
+                </v-list-item>
+                <v-list-item>
+                    <v-switch label="Dark mode" v-model="$vuetify.theme.dark"></v-switch>
+                </v-list-item>
             </v-list>
-            <template v-slot:append>
+            <!-- <template v-slot:append>
                 <div class="pa-2">
                     <v-switch label="Dark mode" v-model="$vuetify.theme.dark"></v-switch>
                 </div>
                 <div class="pa-2 mb-5">
                     <v-btn @click="logout" color="orange">Logout</v-btn>
                 </div>
-            </template>
+            </template> -->
         </v-navigation-drawer>
         <v-app-bar app clipped-left>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-img :src="require('../assets/st-engineering.png')" max-width="150"></v-img>
-            <!-- <v-toolbar-title>System7</v-toolbar-title> -->
             <v-spacer></v-spacer>
             <v-avatar>
                 <v-icon>

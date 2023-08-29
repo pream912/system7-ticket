@@ -246,7 +246,7 @@ export default {
                 console.log(data)
                 this.$store.dispatch('createAlert',{type: 'success', message: 'Ticket created'})
                 this.$store.dispatch('getTickets')
-                let message = `Ticket ID ${ticket.ticket_id} has been opened by ${this.getUserName(ticket.createdBy)} for satation ${ticket.station}. Ticket status: Open`
+                let message = `Ticket ID ${ticket.ticket_id} has been opened by ${this.getUserName(ticket.createdBy)} for satation ${ticket.station}. Ticket status: open`
                 this.sendTelegram(message)
                 this.clear()
             })
@@ -295,7 +295,7 @@ export default {
                 .then(() => {
                     this.$store.dispatch('createAlert',{type: 'info', message: 'Ticket updated'})
                     this.$store.dispatch('getTickets')
-                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action}`
+                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action == 'Followup' ? 'followup' : 'closed'}`
                     this.sendTelegram(message)
                     this.clear()
                 })
@@ -314,7 +314,7 @@ export default {
                 .then(() => {
                     this.$store.dispatch('createAlert',{type: 'info', message: 'Ticket updated'})
                     this.$store.dispatch('getTickets')
-                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action}`
+                    let message = `Ticket ID ${item.ticket_id} has been attended by ${this.getUserName(this.user.id)} for satation ${item.station}. Ticket status: ${this.t_action == 'Followup' ? 'followup' : 'closed'}`
                     this.sendTelegram(message)
                     this.clear()
                 })

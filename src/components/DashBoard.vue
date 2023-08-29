@@ -225,6 +225,7 @@ export default {
             }
             if(this.duration == 'All') {
                 let first = this.tickets.sort((a,b) => +b.ticket_id - +a.ticket_id)[this.tickets.length - 1]
+                this.frange = first.ticket_id
                 this.dayDataPrep(first.ticket_id)
             }
         },
