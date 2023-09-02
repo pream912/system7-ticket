@@ -4,7 +4,6 @@
         <v-row>
             <v-col cols="12">
                 <h2>Dashboard</h2>
-                <div> {{processedData2}} </div>
             </v-col>
             <v-col cols="4">
                 <v-select @change="dateFilters" value="Current month" filled label="Duration" v-model="duration" :items="duraList"></v-select>
@@ -120,9 +119,25 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12">
-                <LineChart :chartData="LinechartData" />
+            <v-col cols="6">
+                <v-card>
+                    <v-card-title> Ticket activity </v-card-title>
+                    <v-card-text>
+                        <LineChart :chartData="LinechartData" />
+                    </v-card-text>
+                </v-card>
             </v-col>
+            <v-col cols="6">
+                <v-card>
+                    <v-card-title> Ticket issues </v-card-title>
+                    <v-card-text>
+                        <LineChart :chartData="LinechartData2" />
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row>
+            
         </v-row>
     </div> 
     </v-container>
@@ -333,11 +348,11 @@ export default {
             let data3 = []
             let data4 = []
             let data5 = []
-            let issue1 = this.issueFilter('Antenna Issue')
-            let issue2 = this.issueFilter('Arm damaged/broken')
-            let issue3 = this.issueFilter('Barrier arm drop /Barrier arm loose')
-            let issue4 = this.issueFilter('barrier not responding / Loop Hang')
-            let issue5 = this.issueFilter('UPS Power')
+            let issue1 = this.issueFilter('Station Offline')
+            let issue2 = this.issueFilter('PMS Offline/ Cannot remote in/ Error connection')
+            let issue3 = this.issueFilter('No IU Detected / Chu hang')
+            let issue4 = this.issueFilter('Antenna Issue')
+            let issue5 = this.issueFilter('Barrier arm drop /Barrier arm loose')
             while( fdate <= today ) {
                 temp = new Date(fdate)
                 labels.push(this.toLocalDate(temp))
@@ -405,6 +420,49 @@ export default {
                         backgroundColor: '#B71C1C',
                         borderColor: '#EF5350',
                         data: this.processedData.data3,
+                        tension: 0.1
+                    },
+                ]
+            }
+        },
+
+        LinechartData2() {
+            return {
+                labels: this.processedData2.labels,
+                datasets: [
+                    {
+                        label: 'Station Offline',
+                        backgroundColor: 'purple',
+                        borderColor: '#AB47BC',
+                        data: this.processedData2.data1,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'PMS Offline/ Cannot remote in/ Error connection',
+                        backgroundColor: 'indigo',
+                        borderColor: '#5C6BC0',
+                        data: this.processedData2.data2,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'No IU Detected / Chu hang',
+                        backgroundColor: 'orange',
+                        borderColor: '#FFA726',
+                        data: this.processedData2.data3,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Antenna Issue',
+                        backgroundColor: 'teal',
+                        borderColor: '#26A69A',
+                        data: this.processedData2.data4,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Barrier arm drop /Barrier arm loose',
+                        backgroundColor: 'pink',
+                        borderColor: '#EC407A',
+                        data: this.processedData2.data5,
                         tension: 0.1
                     },
                 ]
