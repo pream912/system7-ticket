@@ -123,7 +123,7 @@
                 <v-card>
                     <v-card-title> Ticket activity </v-card-title>
                     <v-card-text>
-                        <LineChart :chartData="LinechartData" />
+                        <LineChart v-if="LinechartData" :chartData="LinechartData" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -131,7 +131,7 @@
                 <v-card>
                     <v-card-title> Ticket issues </v-card-title>
                     <v-card-text>
-                        <LineChart :chartData="LinechartData2" />
+                        <LineChart v-if="LinechartData2" :chartData="LinechartData2" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -166,14 +166,15 @@ export default {
         mop: null,
         labels: [],
         data1: [],
-        data2: [],     
+        data2: [], 
+        processedData: null,
+        processedData2: null    
     }),
     components: {
         DoughnutChart,
         LineChart
     },
     methods: {
-
         toLocalDate(date) {
             return new Date(+date).toLocaleDateString('en-IN')
         },
@@ -215,7 +216,9 @@ export default {
                 nex.setHours(0,0,0,0)
                 this.frange = date.getTime()
                 this.trange = nex.getTime()
-                this.dayDataPrep(this.frange)
+                //this.dayDataPrep(this.frange)
+                this.setProcessedData()
+                this.setProcessedData2()
             }
             if(this.duration == 'Last 7 days') {
                 let date = new Date()
@@ -228,7 +231,9 @@ export default {
                 tdate.setHours(0,0,0,0)
                 this.frange = fdate.getTime()
                 this.trange = tdate.getTime()
-                this.dayDataPrep(this.frange)
+                //this.dayDataPrep(this.frange)
+                this.setProcessedData()
+                this.setProcessedData2()
             }
             if(this.duration == 'Select range') {
                 this.frange = new Date(this.fdate).getTime()
@@ -237,12 +242,16 @@ export default {
                 tdate.setDate(day + 1)
                 tdate.setHours(0,0,0,0)
                 this.trange = tdate.getTime()
-                this.dayDataPrep(this.frange)
+                //this.dayDataPrep(this.frange)
+                this.setProcessedData()
+                this.setProcessedData2()
             }
             if(this.duration == 'All') {
                 let first = this.tickets.sort((a,b) => +b.ticket_id - +a.ticket_id)[this.tickets.length - 1]
                 this.frange = first.ticket_id
-                this.dayDataPrep(first.ticket_id)
+                //this.dayDataPrep(first.ticket_id)
+                this.setProcessedData()
+                this.setProcessedData2()
             }
         },
 
@@ -250,7 +259,85 @@ export default {
             return this.tickets.filter((item) => {
                 return item.issue == issue
             })
-        }
+        },
+
+        async setProcessedData() {
+            let f = this.frange
+            let temp = null
+            let fdate = f
+            let today = new Date().getTime()
+            let labels = []
+            let data1 = []
+            let data2 = []
+            let data3 = []
+            while( fdate <= today ) {
+                temp = new Date(fdate)
+                labels.push(this.toLocalDate(temp))
+                let open_tcount = this.tickets.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let closed_tcount = this.closedtickets.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let followup_tcount = this.filt_tickets.filter((item) => {
+                    return item.activity == 'followup' && this.toLocalDate(item.timestamp) == this.toLocalDate(temp)
+                })
+                data1.push(closed_tcount.length)
+                data2.push(followup_tcount.length)
+                data3.push(open_tcount.length)
+                temp.setDate(temp.getDate() + 1)
+                fdate = temp.getTime()
+            }
+            this.processedData = {
+                labels,data1,data2,data3
+            }
+        },
+
+        async setProcessedData2() {
+            let f = this.frange
+            let temp = null
+            let fdate = f
+            let today = new Date().getTime()
+            let labels = []
+            let data1 = []
+            let data2 = []
+            let data3 = []
+            let data4 = []
+            let data5 = []
+            let issue1 = this.issueFilter('Station Offline')
+            let issue2 = this.issueFilter('PMS Offline/ Cannot remote in/ Error connection')
+            let issue3 = this.issueFilter('No IU Detected / Chu hang')
+            let issue4 = this.issueFilter('Antenna Issue')
+            let issue5 = this.issueFilter('Barrier arm drop /Barrier arm loose')
+            while( fdate <= today ) {
+                temp = new Date(fdate)
+                labels.push(this.toLocalDate(temp))
+                let issue1_count = issue1.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let issue2_count = issue2.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let issue3_count = issue3.filter((item) => {
+                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
+                })
+                let issue4_count = issue4.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+                let issue5_count = issue5.filter((item) => {
+                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
+                })
+
+                data1.push(issue1_count.length)
+                data2.push(issue2_count.length)
+                data3.push(issue3_count.length)
+                data4.push(issue4_count.length)
+                data5.push(issue5_count.length)
+                temp.setDate(temp.getDate() + 1)
+                fdate = temp.getTime()
+            }
+            this.processedData2 = {labels,data1,data2,data3, data4, data5}
+        },
     },
 
     computed: {
@@ -303,86 +390,6 @@ export default {
                 }
             }
             return ft
-        },
-
-        processedData() {
-            let f = this.frange
-            let temp = null
-            let fdate = f
-            let today = new Date().getTime()
-            let labels = []
-            let data1 = []
-            let data2 = []
-            let data3 = []
-            while( fdate <= today ) {
-                temp = new Date(fdate)
-                labels.push(this.toLocalDate(temp))
-                let open_tcount = this.tickets.filter((item) => {
-                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
-                })
-                let closed_tcount = this.closedtickets.filter((item) => {
-                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
-                })
-                let followup_tcount = this.filt_tickets.filter((item) => {
-                    return item.activity == 'followup' && this.toLocalDate(item.timestamp) == this.toLocalDate(temp)
-                })
-                data1.push(closed_tcount.length)
-                data2.push(followup_tcount.length)
-                data3.push(open_tcount.length)
-                temp.setDate(temp.getDate() + 1)
-                fdate = temp.getTime()
-            }
-            return {
-                labels,data1,data2,data3
-            }
-        },
-
-        processedData2() {
-            let f = this.frange
-            let temp = null
-            let fdate = f
-            let today = new Date().getTime()
-            let labels = []
-            let data1 = []
-            let data2 = []
-            let data3 = []
-            let data4 = []
-            let data5 = []
-            let issue1 = this.issueFilter('Station Offline')
-            let issue2 = this.issueFilter('PMS Offline/ Cannot remote in/ Error connection')
-            let issue3 = this.issueFilter('No IU Detected / Chu hang')
-            let issue4 = this.issueFilter('Antenna Issue')
-            let issue5 = this.issueFilter('Barrier arm drop /Barrier arm loose')
-            while( fdate <= today ) {
-                temp = new Date(fdate)
-                labels.push(this.toLocalDate(temp))
-                let issue1_count = issue1.filter((item) => {
-                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
-                })
-                let issue2_count = issue2.filter((item) => {
-                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
-                })
-                let issue3_count = issue3.filter((item) => {
-                    return this.toLocalDate(item.ticket_id) == this.toLocalDate(temp)
-                })
-                let issue4_count = issue4.filter((item) => {
-                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
-                })
-                let issue5_count = issue5.filter((item) => {
-                    return this.toLocalDate(item.closedOn) == this.toLocalDate(temp)
-                })
-
-                data1.push(issue1_count.length)
-                data2.push(issue2_count.length)
-                data3.push(issue3_count.length)
-                data4.push(issue4_count.length)
-                data5.push(issue5_count.length)
-                temp.setDate(temp.getDate() + 1)
-                fdate = temp.getTime()
-            }
-            return {
-                labels,data1,data2,data3, data4, data5
-            }
         },
 
         chartData() { 
@@ -476,6 +483,8 @@ export default {
 
     mounted() {
         this.dateFilters()
+        this.setProcessedData()
+        this.setProcessedData2()
     }
 }
 </script>

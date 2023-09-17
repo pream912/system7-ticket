@@ -231,6 +231,14 @@ export default {
         toLocalTime(date) {
             return new Date(+date).toLocaleTimeString('en-IN')
         },
+        convertMilliseconds(milliseconds) {
+            const seconds = Math.floor(milliseconds / 1000)
+            const minutes = Math.floor(seconds / 60)
+            const hours = Math.floor(minutes / 60)
+            const days = Math.floor(hours / 24)
+
+            return `${days}d ${hours % 24}h ${minutes % 60}m`
+        }
     },
 
     computed: {
@@ -268,7 +276,8 @@ export default {
                         batch: st[i].batch,
                         issue: st[i].issue,
                         solution: st[i].solution,
-                        duration: new Date(time_taken).toISOString().slice(11, 19)
+                        //duration: new Date(time_taken).toISOString().slice(11, 19)
+                        duration: this.convertMilliseconds(time_taken)
                     })
                 }
             }
